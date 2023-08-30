@@ -5,22 +5,26 @@ import com.phucnghi.server.model.Response;
 import com.phucnghi.server.model.Server;
 import com.phucnghi.server.service.ServerService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 import static com.phucnghi.server.enumeration.Status.SERVER_UP;
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 @RestController
 @RequestMapping("/server")
+@RequiredArgsConstructor
 public class ServerController {
-    @Autowired
+    final
     ServerService serverService;
 
     @GetMapping("/list")
@@ -29,7 +33,7 @@ public class ServerController {
                 Response.builder()
                         .timeStamp(LocalDateTime.now())
                         .data(of("servers", serverService.list(30)))
-                        .message("servers retrived")
+                        .message("servers retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build()
@@ -42,7 +46,7 @@ public class ServerController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timeStamp(LocalDateTime.now())
-                        .data(of("servers", server))
+                        .data(of("server", server))
                         .message(server.getStatus() == SERVER_UP ? "Ping success" : "Ping failed")
                         .status(OK)
                         .statusCode(OK.value())
@@ -51,11 +55,11 @@ public class ServerController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Response> pingServer(@RequestBody @Valid Server server) {
+    public ResponseEntity<Response> saveServer(@RequestBody @Valid Server server) {
         return ResponseEntity.ok(
                 Response.builder()
                         .timeStamp(LocalDateTime.now())
-                        .data(of("servers", serverService.create(server)))
+                        .data(of("server", serverService.create(server)))
                         .message("server created")
                         .status(CREATED)
                         .statusCode(CREATED.value())
@@ -63,7 +67,7 @@ public class ServerController {
         );
     }
 
-    @GetMapping("/ping/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<Response> getServer(@PathVariable("id") Long id) {
 
         return ResponseEntity.ok(
@@ -88,5 +92,13 @@ public class ServerController {
                         .statusCode(OK.value())
                         .build()
         );
+    }
+
+    @GetMapping(path = "/image/{fileName}", produces = IMAGE_PNG_VALUE)
+    public byte[] getServerImg(@PathVariable("fileName") String fileName) throws IOException {
+        return Files.readAllBytes(Paths.get(
+                "C:\\Users\\Admin\\Desktop\\Spring\\server\\src\\main\\java\\com\\phucnghi\\server\\image\\"
+                        + fileName));
+
     }
 }
