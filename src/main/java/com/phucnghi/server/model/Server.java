@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -14,8 +15,7 @@ import static jakarta.persistence.GenerationType.AUTO;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-
+@Data
 @Entity
 public class Server {
     @Id
