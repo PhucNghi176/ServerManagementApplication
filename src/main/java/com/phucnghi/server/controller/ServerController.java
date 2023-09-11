@@ -81,7 +81,7 @@ public class ServerController {
         );
     }
 
-    @DeleteMapping("/ping/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Response> deleteServer(@PathVariable("id") Long id) {
         return ResponseEntity.ok(
                 Response.builder()
